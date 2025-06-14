@@ -2,11 +2,18 @@ const express = require('express');
 const fileUpload = require('express-fileupload');
 const cors = require('cors');
 const path = require('path');
+const fs = require('fs');
 
 const app = express();
 app.use(cors());
 app.use(fileUpload());
 app.use('/archivos', express.static(path.join(__dirname, 'uploads')));
+
+// Asegura que la carpeta uploads exista
+const uploadDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir);
+}
 
 app.post('/upload', (req, res) => {
     if (!req.files || !req.files.archivo) {
